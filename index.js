@@ -1,34 +1,11 @@
 const { createClient } =  require('redis')
-const axios = require('axios')
+const selectedWords = require('./constants/wordle')
 require('dotenv').config()
 
 
 const main = async () => {
-    const options = {
-        method: 'GET',
-        url: 'https://wordsapiv1.p.rapidapi.com/words/',
-        params: {
-            random: 'true',
-            lettersMin: 5,
-            lettersMax: 5,
-        },
-        headers: {
-            'x-rapidapi-host': 'wordsapiv1.p.rapidapi.com',
-            'x-rapidapi-key': process.env.RAPID_API_KEY
-        }
-    };
-    let wordRequest = await axios.request(options)
-        .catch((error) => {
-            console.error(error);
-        }
-    );
-
-    console.log(wordRequest)
-
-    const chosenWord = wordRequest.data.word
-
-    console.log(chosenWord)
-
+    const index = Math.floor(Math.random() * selectedWords.length)
+    const chosenWord = selectedWords[index]
     const client = createClient({
         url: `redis://${process.env.REDIS_USER}:${process.env.REDIS_PASSWORD}@${process.env.REDIS_URL}`
     });
